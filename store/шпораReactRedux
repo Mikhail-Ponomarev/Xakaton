@@ -1,0 +1,32 @@
+1) useSelector - позволяет получить доступ к данным хранилища
+
+2) useDispatch - позволяет получить доступ к методам хранилища
+    синтаксис:
+    const dispatch - useDispatch()
+    // вызов функции addUser из хранилища
+    dispatch(addUser())
+
+3) работа с RTKQuery
+  // Хуки для ассинхронных запросов используя RTK Query
+  // Хуки useGetPostsQuery, useGetCommentsQuery будут выполнены при рендеринге компоненты
+  // в post и comment возвращаемые значения функций
+  const post = useGetPostsQuery(postId)
+  const comment = useGetCommentsQuery(commentId)
+  // Хук useCreateCommentMutation не будет вызван автоматически, он вернет функцию для запроса
+  // и другие данные по типу isError, error, isLoading и другие 
+  const [createComment, {isError, error, isLoading}] = useCreateCommentMutation()
+
+  const handleCreateComment = async (body) => {
+    // unwrap нужен для корректной работы isError, error, isLoading и прочих
+    await createComment(body).unwrap()
+  }
+
+4) useStore() позволяет получить доступ хранилищу
+    const store = useStore()
+    4.1 получение данных из хранилища
+    // red1 - название редюсера, value - название поля
+    store.getState().red1.value
+    4.2 вызов методов из хранилища
+    // вызов метода addUser
+    store.dispatch(addUser(body))
+    

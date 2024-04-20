@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkxakaton2024=self.webpackChunkxakaton2024||[]).push([[6],{6:(e,t,n)=>{n.r(t),n.d(t,{Auth:()=>k});var s=n(3),a=n(216),c=n(332),r=n(579);const k=()=>{const e=(0,s.d4)((e=>e.red1)),t=(0,a.Zp)(),n=(0,s.wA)();return e&&t("/FirstPage",{replace:!0}),(0,r.jsx)("div",{children:(0,r.jsx)("button",{onClick:()=>n((0,c.WG)("abc")),children:"set token"})})}}}]);
+//# sourceMappingURL=6.2e726cc7.chunk.js.map

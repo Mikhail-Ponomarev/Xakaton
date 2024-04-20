@@ -1,0 +1,409 @@
+1) Рендеринг, 3 этапа
+    1.1) Тригер рендеринга
+        1.1.1) начальный рендеринг
+        1.1.2) состояние какого-то компонента обновилось
+    1.2) Рендеринг - то есть получение уже готового компонента, есть 2 сценария
+        1.2.1) Тригер рендеринга - это начальный рендеринг, тогда вызывается корневой элемент и его метод render
+        1.2.2) Тригер рендеринга - это изменение какого-то состояния, то react вызывает функцииональный компонент, 
+        чье состояние изменилось
+    1.3) Коммит в ДОМ дерево, есть 2 сценария
+        1.3.1) Тригер рендеринга - это начальный рендеринг, тогда вызывается appendChild, для монтирования в ДОМ
+        1.3.2) Тригер рендеринга - это изменение какого-то состояния, то реакт изменит только ту часть ДОМ дерева, которую нужно
+    Реакт строит виртуальное ДОМ дерево, при изменении состояния, реакт находит разницу с предыдущем состоянием дерева и в реальном
+    ДОМ дереве меняет только нужную часть
+    DOM node - представляет собой элемент DOM, который создается и управляется React для отображения компонентов на веб-странице.
+
+2)  useEffect - нужно для синхранизации между состояния React и внешним состоянием, таким как DOM, BOM, Server и т.д.
+    В момент рендера компонента вызывается useEffect и создается функция эффекта, функция эффекта запоминает начальное состояние
+    всех переменных в массиве зависимостей.
+    Функция эффекта вызывается ПОСЛЕ отрисовки компоненты на странице.
+    useEffect(() => {
+        ...
+        // функция очистки
+        return () => {}
+    }, [tmp])
+    При обновлении значения tmp сначала будет вызвана функция очистки, принадлежавшая прошлой функции эффекта,
+    затем будет вызвана текущая версия функции эффекта.
+    Функция очистки будет так же вызвана после размонтирования компонента.
+    Функция очистки вызывается после отрисовки/перерисовки элементов.
+    useEffect асинхронный(не блокирующий)
+    useEffect применяется для запросов к бэкенду
+    
+3)  useLayoutEffect - аналог useEffect, но он вызывается перед отрисовкой/перерисовкой элементов.
+    useLayoutEffect синхронный(блокирующий). API такой же, как у useEffect
+    useLayoutEffect лучше подходит тогда, когда нужно изменить DOM элементы
+
+4)  useState - возможность подписаться на изменения состояния
+    function App() {
+        const [counter, setCounter] = useState(0)
+        return(
+            <button onClick={() => setCounter(counter + 1)}>
+                меня нажали {counter} раз
+            </button>
+        )
+    }
+    при нажатии на кнопку будет повторный рендеринг компоненты, то есть реакт будет пробегаться по всей функции. 
+    useState каждый раз будет подставлять в переменную counter инкрементированной значение.
+    Повторный рендеринг случается из-за вызова функции setCounter.
+    function App() {
+        const [counter, setCounter] = useState(0)
+        const handleClick = () => {
+            setCounter(counter + 1)
+            setCounter(counter + 1)
+        }
+        return(
+            <button onClick={handleClick}>
+                меня нажали {counter} раз
+            </button>
+        )
+    }
+    в этом примере при нажатии на кнопку counter будет увеличиваться на 1, а не на 2, так как setCounter 2 раза подряд будет вызываться 
+    с одинаковым значением counter. Правильное описание функции handleClick:
+        const handleClick = () => {
+            setCounter((x, props) => x + 1)
+            setCounter((x, props) => x + 1)
+        }
+    Функции внутри setCounter будут синхронные, вместо x будет подставляться текущее значение counter, useState запишет возвращаемое значение функции в counter
+
+4)  useMemo - предотвращает ненужные вызовы функций
+    function createUser(name) {
+        return {name}
+    }
+    function App() {
+        const [counter, setCounter] = useState(0)
+        const [name, setName] = useState('')
+
+        const user = createUser(name)
+
+        return(
+            <button onClick={() => setCounter(counter + 1)}>
+                меня нажали {counter} раз
+            </button>
+            <input onChanhe(e => setName(e.target.value)) 
+            />
+        )
+    }
+    В этом коде каждое нажатие на кнопку приводит к перерендеренгу компоненты => к вызову функции createUser, даже если значение name не менялось
+
+    function App() {
+        const [counter, setCounter] = useState(0)
+        const [name, setName] = useState('')
+
+        const user = useMemo(() => createUser(name),[name])
+
+        return(
+            <button onClick={() => setCounter(counter + 1)}>
+                меня нажали {counter} раз
+            </button>
+            <input onChanhe(e => setName(e.target.value)) 
+            />
+        )
+    }
+    Использование useMemo приводит к тому, что вызов функции createUser происходит только при изменении name, что более логично
+
+5) useCallback возвращает одну и туже ссылку на функцию
+    function App() {
+        const [counter, setCounter] = useState(0)
+        const [name, setName] = useState('')
+
+        const showMessage = (text) => {
+            console.log(text)
+        }
+
+        useEffect(() => {
+            showMessage(name)
+        }, [showMessage, name])
+
+        return(
+            <button onClick={() => setCounter(counter + 1)}>
+                меня нажали {counter} раз
+            </button>
+            <input onChanhe(e => setName(e.target.value)) 
+            />
+        )
+    }
+    При нажатии на кнопку будет вызваться функция showMessage, потому что при повторном рендеринге в showMessage будет меняться ссылка на функицю.
+    useCallback решает эту проблему.
+
+    function App() {
+        const [counter, setCounter] = useState(0)
+        const [name, setName] = useState('')
+
+        const showMessage = useCallback((text) => {
+            console.log(text)
+        }, [name])
+
+        useEffect(() => {
+            showMessage(name)
+        }, [showMessage])
+
+        return(
+            <button onClick={() => setCounter(counter + 1)}>
+                меня нажали {counter} раз
+            </button>
+            <input onChanhe(e => setName(e.target.value)) 
+            />
+        )
+    }
+    В таком сценарии ссылка на функцию будет меняться только при изменении name => useEffect будет срабатывать только при изменении name, а не counter
+
+6) useReducer - улучшенный useState
+    // набор типов действий
+    const DECREMENT = 'decrement'
+    const INCREMENT = 'increment'
+
+    // набор экшн генираторов
+    const increment = (paylod) => ({
+        type: INCREMENT,
+        paylod
+    })
+    const decrement = (paylod) => ({
+        type: DECREMENT,
+        paylod
+    })
+
+    // сам редюсер, он должен вернуть новый объект, а не модифицировать state
+    function reducer(state, action) {
+        switch(action.type) {
+            case INCREMENT: return {
+                counter: state.counter + action.paylod
+            }
+            case DECREMENT: return {
+                counter: state.counter - action.paylod
+            }
+            default: return {
+                ...state
+            }
+        }
+    }
+
+    function App() {
+        // useReducer принимает сам reducer и нач. состояние
+        // dispatch - функция для вызова reducer, принимает только action
+        const [state, dispatch] = useReducer(reducer, {counter: 0})
+
+        return(
+            <div onClick={() => dispatch(increment(1))}>+1</div>
+            <div onClick={() => dispatch(increment(2))}>+2</div>
+            <p>{state.counter}</p>
+            <div onClick={() => dispatch(decrement(2))}>-2</div>
+            <div onClick={() => dispatch(decrement(1))}>-1</div>
+        )
+    }
+
+6) useContext - передача данных при глубоком уровне вложенности
+    // файл App.js
+    const MyContext = React.createContext()
+
+    function App() {
+        const [value, setValue] = useState(0)
+
+        return(
+            <MyContext.Provider value={value}>
+                <Elem1>
+                    <Elem2>
+                        <Elem3 />
+                    </Elem2>
+                </Elem1>
+            </MyContext.Provider>
+        )
+    }
+
+    export default MyContext
+
+    // файл Elem3.js
+
+    import MyContext from 'App.js'
+
+    function Elem3() {
+        // получили значение value и компонента App
+        const value = useContext(MyContext)
+    }
+
+7) useRef - сслыка на дом элемент
+    function App() {
+        const ref =  useRef()
+
+        return(
+            <div>
+                <button onClick={() => ref.current.focus()}>
+                меня нажали {counter} раз
+                </button>
+                <input ref={ref}/>
+            </div>
+        )
+    }
+    При нажатии на кнопку придается фокус полю ввода
+
+8) forwardRef нужен для прокидывания ref
+    //  файл App.js
+    function App() {
+        const ref = useRef()
+
+        return(
+            <Elem ref={ref}/>
+        )
+    }
+    // файл Elem.js
+    function Elem({ref}) {
+        return(
+            <div ref={ref}>
+                ....
+            </div>
+        )
+    }
+    При таком сценарии в ref не будет сслыки
+
+    Правильный подход, использование forwardRef:
+    const Elem = forwardRef((props, ref) => {
+        return(
+            <div ref={ref}>
+                ....
+            </div>
+        )
+    })
+    // чтобы было видно имя в component toolkit
+    Elem.displayName = 'Elem'
+
+9) propTypes/defaultProps - контроль передоваемых в компоненту параметров
+
+    import PropTypes from 'prop-types'
+
+    const Elem = ({ str, age, mass, callback, tmp }) => {
+        ....
+    }
+
+    // проверка значений, которые переданы в компонент
+    Elem.propTypes = {
+        // str должна быть строкой
+        str: PropTypes.string
+        // age должно быть числом, isRequired обозначает, что параметр обязателен должен быть передан в компонент
+        age: PropTypes.number.isRequired 
+        // callback должен быть функцией
+        callback: PropTypes.func
+        // mass должен быть массивом чисел
+        mass: PropTypes.arrayOf(PropTypes.number)
+        // tmp должен быть либо строкой, либо числом
+        tmp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    }
+
+    // задание параметров по умолчанию, в случае если параметр не был передан
+    Elemnt.defaultProps = {
+        str: 'Hello world',
+        callback: () => {
+            console.log('empty func')
+        }
+    }
+
+
+10) babel-plugin-module-resolver - используется для упрощения доступа к файлам, используя эту технологию путь, который надо прописать становится короче
+
+11) ErrorBoundary - обработка ошибок, хук componentDidCatch для обработки ошибок есть только в классовых компонентах.
+    Предохранитель не ловит ошибки при:
+        1) обработчиках событий
+        2) в асинхронном коде(например в setTimeout)
+        3) в серверном рендеринге(роцесс отображения веб-страницы на сервере и отправки уже готового HTML-кода клиенту для отображения.)
+        4) в самом предохранителем
+    Предохранитель ловит только ошибки в дочерних компонентах при рендеринге
+    
+
+
+    class ErrorBoundary extends React.Component {
+        constructor(props) {
+            super(props)
+
+            this.state = {
+                hasError: false,
+                error: null,
+                errorInfo: null
+            }
+        }
+        // хук для обработки ошибок
+        componentDidCatch(error, errorInfo) {
+            this.setState ({
+                hasError: true,
+                error,
+                errorInfo
+            })
+        }
+
+        render() {
+            if(this.state.hasError) {
+                return <p>Ошибка обработана</p>
+            }
+
+            return this.props.children
+        }
+    }
+
+    function App() {
+        return(
+            <ErrorBoundary>
+                Обертываем все компоненты предохранителем
+            </ErrorBoundary>
+        )
+    }
+
+12) createPortal - монтирование jsx в другую точку входа 
+    // файл index.html
+    // все приложение монтируется в root(как обычно)
+    <body>
+        <div id="root"></div>
+        <div id="modal"></div>
+    </body>
+    
+    // монтируем часть jsx в другую точку входа(в modal)
+    const ModalWindow = document.getElementById("modal")
+    const App2 = () => {
+        const elem = <p>Text</p>
+        return(
+            // 1-ый параметр - что монтируем
+            // 2-ой параметр - куда монтируем
+            createPortal(elem, ModalWindow)
+        )
+    }
+
+13) flushSync - можем вручную контролировать количество рендерингов
+    // даже не смотря на вызов 4 set функций у нас будет всего один!!! ререндеринг компоненты, при каждом нажатии на кнопку
+    const App2 = () => {
+        const [counter1, setCounter1] = useState(0)
+        const [counter2, setCounter2] = useState(0)
+        const [counter3, setCounter3] = useState(0)
+        const [counter4, setCounter4] = useState(0)
+        const handleClick = (dif) => {
+            setCounter1(counter1 + 1)
+            setCounter2(counter2 + 1)
+            setCounter3(counter3 + 1)
+            setCounter4(counter4 + 1)
+        }
+        useEffect(() => {
+            if(counter1 === 0) {
+                console.log('render')
+            } else {
+                console.log('Rerender')
+            }
+        })
+        return(
+            <button onClick={() => handleClick(1)}>
+                на меня нажали n раз
+            </button>
+        )
+    }
+    // добавив flushSync мы получим 2 рендеринга
+    const handleClick = (dif) => {
+        flushSync(() => {
+            setCounter1(counter1 + 1)
+            setCounter2(counter2 + 1)
+        })
+        flushSync(() => {
+            setCounter3(counter3 + 1)
+            setCounter4(counter4 + 1)
+        })
+    }
+
+14) createRoot - создать точку входа в приложение
+    // 1-ый параметр - сслыка на DOM  элемент
+    // 2-ой параметр - настройки
+    const root = React.createRoot(elem, params)
+    1) Гидратация или регидратация - добавление в DOM на клиенте  недостающих событий, методов, 
+    а в некоторых случаях и элементов, которые не рендерились на сервере.

@@ -1,0 +1,217 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+
+
+    &_block1 {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 560px;
+        height: 198px;
+        margin-top: 50px;
+
+        &_btn {
+            width: 560px;
+            height: 120px;
+            border-radius: 60px;
+            border: none;
+            background: var(--yelllow, #FD0);
+
+            &_pic {
+                width: auto;
+                height: auto;
+            }
+        }
+
+        &_text {
+            display: flex;
+            color: var(--black, #131313);
+            text-align: center;
+            font-family: "Montserrat-Regular";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+    }
+
+    &_block2 {
+        display: block;
+        justify-content: space-between;
+        width: 95%;
+        height: auto;
+        margin-left: 20px;
+        margin-right: 20px;
+
+        &_col1 {
+            max-width: 1150px;
+            margin-right: 50px;
+            height: auto;
+
+            &_title {
+                display: flex;
+                align-items: center;
+                height: 44px;
+                width: auto;
+
+                &_text {
+                    display: inline-block;
+                    margin: 0px;
+                    padding: 0px;
+                    color: var(--black, #131313);
+                    font-family: "Montserrat-Bold";
+                    font-size: 36px;
+                    font-style: normal;
+                    line-height: normal;                 
+                }
+
+                &_pic {
+                    width: 25px;
+                    height: 25px;
+                    rotate: 180deg;
+                    margin-left: 10px;
+                }
+
+                &_pic2 {
+                    width: 25px;
+                    height: 25px;
+                    margin-left: 10px;
+                    animation-name: rotateStrelka;
+                    animation-duration: 0.5s;
+                    animation-fill-mode: forwards;
+                }
+
+                &_pic3 {
+                    width: 25px;
+                    height: 25px;
+                    margin-left: 10px;
+                    animation-name: rotateStrelka2;
+                    animation-duration: 0.5s;
+                    animation-fill-mode: forwards;
+                }
+            }
+
+            &_hide {
+                display: none;
+                height: 0px;
+            }
+
+            &_show {
+                height: 0px;
+                justify-content: space-between;
+                animation-name: showList;
+                animation-duration: 0.5s;
+                animation-fill-mode: forwards;
+                animation-timing-function: linear;
+                width: 100%;
+                
+
+
+                &_elem {
+                    width: 100%;
+                    height: 84px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    animation-name: showElem;
+                    animation-duration: 1.5s;
+                    animation-fill-mode: forwards;
+
+
+                    &_picMolnia {
+                        width: 34px;
+                        height: 34px;
+                    }
+    
+                    &_eventNumber {
+                        color: var(--black, #131313);
+                        font-family: "Montserrat-Bold";
+                        font-size: 36px;
+                        font-style: normal;
+                        line-height: normal;
+                    }
+    
+                    &_daysToGo {
+                        color: #000;
+                        text-align: center;
+                        font-family: "Montserrat-Regular";
+                        font-size: 24px;
+                        font-style: normal;
+                        line-height: normal;
+                    }
+    
+                    &_date {
+                        color: rgba(0, 0, 0, 0.30);
+                        font-family: "Montserrat-Regular";
+                        font-size: 24px;
+                        font-style: normal;
+                        line-height: normal;
+                    }
+    
+                    &_pic2 {
+                        width: 25px;
+                        height: 25px;
+                    }
+                }
+
+            }
+        }
+
+        &_col2 {
+                
+        }
+    }
+
+    &_pic {
+        width: 100%;
+        height: 100%;
+    }
+
+}
+
+
+@keyframes rotateStrelka {
+    from {
+        rotate: 180deg;
+    } to {
+        rotate: 0deg;
+    }
+    
+}
+
+@keyframes rotateStrelka2 {
+    from {
+        rotate: 0deg;
+    } to {
+        rotate: 180deg;
+    }
+    
+}
+
+
+@keyframes showList {
+    from {
+        display: none;
+        height: 0px;
+    } to {
+        display: block;
+        height: auto;
+    }
+}
+
+@keyframes showElem {
+    0% {
+        opacity: 0;
+    } 40% {
+        opacity: 0;
+    } 100% {
+        opacity: 1;
+    }
+    
+}

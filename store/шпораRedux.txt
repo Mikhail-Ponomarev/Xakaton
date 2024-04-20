@@ -1,0 +1,166 @@
+1) Redux
+    1.1 combineReducers - соеденить несколько reducers в один
+    const rootReducer = combineReducers({
+        red1: reducerFirst,
+        red2: reducerSecond,
+        red3: reducer3
+    })
+
+    1.2 configureStore - создать хранилище
+    export default configureStore({
+        reducer: {
+            red1: reducerFirst,
+            red2: reducerSecond,
+            // подкдключение RTKQuery
+            [jsonAPI.reducerPath]: jsonAPI.reducer
+        },
+        // подкдключение RTKQuery
+        middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(jsonAPI.middleware)
+    })
+
+    1.3 createSlice - создание среза
+    const Slice2 = createSlice({
+        name: 'SecondSlice',
+        initialState: {
+            value: 0
+        },
+        reducers: {
+            changeValue(state, action) {
+                state.value += action.payload
+            }
+        }
+    })
+    export const {changeValue} = Slice2.actions
+    export default Slice2.reducer
+
+    1.4 createAsyncThunk - функция для асинхронных запросов
+    export const getUsers = createAsyncThunk(
+        'firstSlice/getUsers',
+        // если произошла ошибка, то за счет rejectWithValue, она прилетит в [getUsers.rejected]
+        async function (_, {rejectWithValue, getState, dispatch}) {
+            try {
+                const responce = await fetch('https://jsonplaceholder.typicode.com/todos')
+                if(!responce.ok) {
+                    throw new Error('Server error')
+                }
+                const data = await responce.json()
+                // getState - доступ к данным хранилища
+                const state = getState()
+                // dispatch - доступ к методам хранилища
+                dispatch(setUsers(data))
+                dispatch(setStatus('complited'))
+            } catch(error) {
+                return rejectWithValue(error.message)
+            }
+        },
+    )
+    const slice = createSlice({
+        name: 'firstSlice',
+        initialState: {
+            users: []
+        },
+        reducers: {
+            setUsers(state, action) {
+                state.users = action.payload
+            }
+        },
+        // extraReducers нужно для работы с AsyncThunk
+        extraReducers: (builder) => {
+            builder.addCase(getUsers.pending, (state, action) => {
+                state.status = 'pending'
+                state.error = null
+            });
+            // в action то, что возвращает асинхронная функция
+            builder.addCase(getUsers.fulfilled, (state, action) => {
+                state.status = 'complited'
+                state.error = null
+                state.users = action.payload
+            });
+            builder.addCase(getUsers.rejected, (state, action) => {
+                state.status = 'failed'
+                state.error = action.payload
+            });
+        }
+    })
+    1.5 Использование RtkQuery
+    import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+
+    export const jsonAPI = createApi({
+        reducerPath: 'jsonAPI',
+        // синтаксис с tagTypes, provideTags, invalidateTags нужен вот в каком случае
+        // допустим, что getComments - возвращает все комментарии, например  их 10 штук и они отображены на сайте
+        // после создания 11 комментария функцией createComment он не будет автоматически отображен на сайте
+        // синтаксис с tagTypes, provideTags, invalidateTags гарантирует, что после создания нового комментария,
+        // будет снова сделан запрос за всеми комментариями
+        tagTypes: ['Comments'],
+        baseQuery: fetchBaseQuery({baseUrl: 'https://jsonplaceholder.typicode.com/'}),
+        // query для get запросов
+        // mutation для post, put, patch, delete запросов
+        endpoints: (build) => ({
+            getPosts: build.query({
+                query: (id) => `posts/${id}`
+            }),
+            getComments: build.query({
+                query: (id) => `comments/${id}`,
+                providesTags: (result) =>
+                    result
+                    ? [
+                        ...result.map(({ id }) => ({ type: 'Comments', id })),
+                        { type: 'Comments', id: 'LIST' },
+                        ]
+                    : [{ type: 'Comments', id: 'LIST' }],
+            }),
+            createComment: build.mutation({
+                query: (data) => ({
+                    url: 'comments',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }),
+                invalidatesTags: [{ type: 'Comments', id: 'LIST' }],
+            })
+        }), 
+    })
+    // названия методов формируются автоматически
+    export const {useGetPostsQuery, useGetCommentsQuery, useCreateCommentMutation} = jsonAPI 
+
+    1.6 createAntityAdapter - специальный метод, позвляющий быстро обновлять и добавлять данные в хранилище 
+    import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+
+    const userAdapter = createEntityAdapter()
+
+    const initialState = userAdapter.getInitialState({
+        ids: [],
+        entities: {}
+    })
+
+    const Slice3 = createSlice({
+        name: 'users',
+        initialState,
+        reducers: {
+            // addUser - принимает объект с инф о новой сущности
+            addUser: userAdapter.addOne,
+            // changeUser - принимает id сущности и объект с новой инф о сущности
+            changeUser: userAdapter.updateOne,
+            // deleteUser - принимает id сущности, которую надо удалить
+            deleteUser: userAdapter.removeOne,
+            // с many примерно все тоже самое, только передавать надо массивы id и сущностей 
+            addUsers: userAdapter.addMany,
+            changeUsers: userAdapter.updateMany,
+            // upsert - добавляет или меняет экзмепляр сущности
+            upsertUser: userAdapter.upsertOne,
+            upserUsers: userAdapter.upsertMany,
+        }
+    })
+
+    export const {addUser, changeUser, deleteUser} = Slice3.actions
+    export default Slice3.reducer
+
+    1.7 связь react и redux
+    root.render(
+        <Provider store={store}>
+            <App />
+        </Provider>
+    );

@@ -1,0 +1,109 @@
+1) отключение ненужным событий, обязательно!!!!!
+import { persistStore, 
+    persistReducer,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+} from 'redux-persist'
+
+export const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+        serializableCheck: {
+            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+    }),
+})
+
+2) создание persistedReducer
+const rootReducer = combineReducers({
+    red1: reducerFirst,
+    red2: reducerSecond,
+    red3: reducer3
+})
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+3) persistConfig
+    const persistConfig = {
+        key: 'root',
+        storage,
+        whitelist: ['red1', 'red2'],
+        blacklist: ['red3'],
+        version: 2,
+        migrate: (state) => { 
+            switch (state._persist.version) {
+                case 1:
+                    newState = {
+                        ...state.red1,
+                        updatedField: 'default',
+                    }
+                    break;
+                case 2:
+                    newState = {
+                        ...state,
+                        newField: 'newData'
+                    }      
+            }
+            return Promise.resolve(newState)
+        },
+        transforms: [compressTransform, compressTransform2]
+    }
+
+    3.1 варианты со storage
+    SessionStorage - временное хранилища данных, которое сохраняет данные во время работы сайта, 5-10 мб
+    LocalStorage - долгосрочное хранилище данных, 5-10 мб
+    IndexedDb - долгосрочное хранилище данных, 50-100 мб
+
+    3.2 whitelist/blacklist 
+        whitelist - список редюсеров, состояние которых надо запоминать
+        blacklist - список редюсеров, состояние которых не надо запоминать
+
+    3.3 migrate - позволяет добавить к хранилищу новые поля, version - указывает нужную версию
+
+    3.4 transforms - позволяет упаковать данные до сохранения и распокавать данные после сохранения
+    const compressTransform = createTransform(
+        (inBoundState, key) => {
+            // console.log(inBoundState);
+            const formData = new FormData();
+            for (const [name, value] of Object.entries(inBoundState)) {
+                formData.append(name, value);
+            }
+            return { ...inBoundState, data: formData };
+        },
+        (outBoundState, key) => {
+            console.log(outBoundState);
+            const data = {};
+            for (const [key, value] of outBoundState.data.entries()) {
+                data[key] = value;
+            }
+            return { ...outBoundState, data };
+        },    
+        {whitelist: ['red1']}
+    )
+
+    const compressTransform2 = createTransform(
+        (inBoundState, key) => {
+            return {...inBoundState, data: JSON.stringify(inBoundState.data)}
+        },
+        (outBoundState, key) => {
+            return {...outBoundState, data: JSON.parse(outBoundState.data)}
+        },
+        {whitelist: ['red2']}
+    )
+
+    3.5 создание персистора
+    export const persistor = persistStore(store)
+
+4) подключение redux-persist к react
+root.render(
+  <Provider store={store}>
+    <PersistGate loading={<p>Loading...</p>} persistor={persistor}>
+      <App />
+    </PersistGate>
+  </Provider>
+);
