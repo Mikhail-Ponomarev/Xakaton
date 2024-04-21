@@ -1,231 +1,147 @@
+@import '../Fonts.module.scss';
+
 .container {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: #fff;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
 
 
-    &_block1 {
-        position: absolute;
-        right: 0px;
-        top: 50px;
-        width: 680px;
-        height: 175px;
-        flex-shrink: 0;
-
-        @media screen and (max-width: 1440px) {
-            width: 450px;
-            height: 131px;
-            top: 80px;
-        }
-
-        @media screen and (max-width: 1000px) {
-            width: 363px;
-            height: 93px;
-            top: 99px;
-        }
-
-        @media screen and (max-width: 768px) {
-            width: 366px;
-        }
-
-        @media screen and (max-width: 430px) {
-            width: 333px;
-            height: 85px;
-            top: 40px;
-        }
-
-        @media screen and (max-width: 375px) {
-            width: 269px;
-            height: 69px;
-            top: 50px;
-        }
-
-
-
-        &_pic {
-            width: 100%;
-            height: 100%;
-        }
-    } 
-    
-    &_block2 {
-        position: absolute;
-        bottom: 50px;
-        left: 0px;
-        
-        width: 680px;
-        height: 222px;
-        flex-shrink: 0;
-
-        @media screen and (max-width: 1440px) {
-            width: 510px;
-            height: 166px;
-            bottom: 70px;
-        }
-
-        @media screen and (max-width: 1000px) {
-            width: 363px;
-            height: 118px;
-            bottom: 94px;
-        }
-
-        @media screen and (max-width: 768px) {
-            bottom: 48px;
-        }
-
-
-        @media screen and (max-width: 430px) {
-            width: 334px;
-            height: 108px;
-            bottom: 40px;
-        }
-
-        @media screen and (max-width: 375px) {
-            width: 270px;
-            height: 88px;
-            bottom: 50px;
-        }
-
+    &_col1 {
+        height: 100vh;
+        width: 100%;
+        max-width: 473px;
+        position: relative;
 
         &_picReverse {
+            position: absolute;
+            left: 0px;
+            bottom: 49px;
             width: 100%;
-            height: 100%;
-
+            height: 154px;
             rotate: 180deg;
         }
     }
 
-    &_logo {
-        width: 400px;
-        height: 400px;
-        flex-shrink: 0;
-        margin-top: 50px;  
-
-        @media screen and (max-width: 1440px) {
-            width: 288px;
-            height: 288px;
-            margin-top: 60px;
-        }
-
-        @media screen and (max-width: 430px) {
-            width: 150px;
-            height: 150px;
-            margin-top: 150px;
-        }
-
-    }
-
-    &_auth {
+    &_col2 {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         align-items: center;
-        width: 720px;
-        height: 474px;
-        margin-top: 45px;
+        max-width: 720px;
+        width: 100%;
+        height: 100vh;
 
-        &_block1 {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 100%;
-            height: 135px;
-
-            &_input {
-                width: 100%;
-                height: 50px;
-                border-radius: 25px;
-                border: 1px solid var(--black, #131313);
-                color: rgba(19, 19, 19, 0.30);
-                font-family: "Montserrat-Regular";
-                font-size: 24px;
-                font-style: normal;
-                line-height: normal;
-            }
+        &_oggetto {
+            width: 400px;
+            height: 400px;
+            flex-shrink: 0;
+            margin-top: 50px;
         }
 
-        &_block2 {
-            width: 560px;
-            height: 289px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
+        &_input {
+            width: 100%;
+            height: 50px;
+            margin-top: 40px;
+            border-radius: 25px;
+            border: 1px solid var(--black, #131313);
 
-            
-            &_btn1 {
-                display: flex;
-                height: 100px;
-                width: 560px;
-                padding: 28px 0px;
-                justify-content: center;
-                align-items: center;
-                border-radius: 50px;
-                border: 1px solid var(--yelllow, #FD0);
-                color: var(--black, #131313);
+            color: rgba(19, 19, 19, 0.30);
+            font-family: "Montserrat-Regular";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+
+        &_btn {
+            display: flex;
+            width: 100%;
+            max-width: 560px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50px;
+            border: 1px solid var(--yelllow, #FD0);
+            margin-top: 50px;
+
+
+            color: var(--black, #131313);
+            text-align: center;
+            font-family: "Montserrat-Regular";
+            font-size: 36px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+
+        &_btn2 {
+            display: flex;
+            max-width: 560px;
+            width: 100%;
+            height: 100px;
+            border-radius: 50px;
+            background: #4285F4;
+            align-items: center;
+            justify-content: space-between;
+            border: none;
+
+
+            &_pic {
+                width: 50px;
+                height: 50px;
+                margin-left: 38px;
+            }
+
+            &_text {
+                color:  #FFF;
                 text-align: center;
+
                 font-family: "Montserrat-Regular";
                 font-size: 36px;
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
-            }
-
-            &_text {
-                color: rgba(19, 19, 19, 0.30);
-                text-align: center;
-                font-family: "Montserrat-Regular";
-                font-size: 24px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: normal;
-            }
-
-            &_btn2 {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                width: 560px;
-                height: 100px;
-                border-radius: 50px;
-                background: #4285F4;
-                border: none;
-
-
-                &_pic {
-                    margin-left: 38px;
-                    width: 50px;
-                    height: 50px;
-                }
-
-                &_text {
-                    color: var(--white, var(--Color, #FFF));
-                    text-align: center;
-                    font-family: "Montserrat-Regular";
-                    font-size: 36px;
-                    font-style: normal;
-                    line-height: normal;
-                    margin-right: 42px;
-                }
+                margin-right: 42px;
             }
 
         }
+
+        &_text {
+            color: rgba(19, 19, 19, 0.30);
+            text-align: center;
+            font-family: "Montserrat-Regular";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
     }
 
-    &_Google {
+    &_col3 {
+        height: 100vh;
+        width: 100%;
+        max-width: 473px;
+        position: relative;
+
+        &_pic {
+            position: absolute;
+            right: 0px;
+            top: 50px;
+            width: 100%;
+            height: 154px;
+        }
+    }
+
+    &_pic {
+        width: 100%;
+        height: 100%;
+    }
+
+    &_pic2 {
         width: 100%;
         height: 100%;
         border-radius: 100%;
     }
-
-    @media screen and (max-width: 1440) {
-        
-    }
-        
-    
 }
 
 :active, :hover, :focus {

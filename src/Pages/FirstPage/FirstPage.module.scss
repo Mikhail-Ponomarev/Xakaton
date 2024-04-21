@@ -1,3 +1,5 @@
+@import '../Fonts.module.scss';
+
 .container {
     display: flex;
     flex-direction: column;
@@ -5,7 +7,7 @@
     width: 100%;
     margin: 0px;
     padding: 0px;
-    height: 100%;
+    height: auto;
 
 
     &_block1 {
@@ -44,14 +46,15 @@
     &_block2 {
         display: block;
         justify-content: space-between;
-        width: 95%;
+        width: 100vw;
         height: auto;
         margin-left: 20px;
         margin-right: 20px;
 
         &_col1 {
+            width: 100%;
             max-width: 1150px;
-            margin-right: 50px;
+            margin-left: 40px;
             height: auto;
 
             &_title {

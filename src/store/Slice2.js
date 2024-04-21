@@ -3,14 +3,25 @@ import { createSlice } from "@reduxjs/toolkit";
 const Slice2 = createSlice({
     name: 'SecondSlice',
     initialState: {
-        value: 0
+        lastName: null,
+        name: null,
+        date: null,
+        post: null,
+        hobbies: null
     },
     reducers: {
-        changeValue(state, action) {
-            state.value += action.payload
+        setInfo(state, action) {
+            state.lastname = action.payload.lastname
+            state.name = action.payload.name
+            state.date = action.payload.date
+            state.post = action.payload.post
+            state.hobbies = action.payload.hobbies
+        },
+        getInfo(state) {
+            return state
         }
     }
 })
 
-export const {changeValue} = Slice2.actions
+export const {setInfo, getInfo} = Slice2.actions
 export default Slice2.reducer

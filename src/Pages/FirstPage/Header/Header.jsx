@@ -12,6 +12,11 @@ import loop from './search.png'
 import notification from './notification.png'
 import { defer, useLoaderData } from 'react-router-dom'
 
+import { Modal } from "../../Modal/Modal";
+import { Portal } from "../../Portal/Portal";
+
+const modal = document.getElementById("modal")
+
 
 const Header = ({pic_src}) => {
     const {comment} = useLoaderData()
@@ -25,6 +30,14 @@ const Header = ({pic_src}) => {
     const [chat, setChat] = useState(chat1)
     const [channel, setChannel] = useState(channel1)
     const [worker, setWorker] = useState(workers1)
+
+    const [value, setValue] = useState(0)
+
+    if(value === 1) {
+        modal.classList.add('modal')
+    } else {
+        modal.classList.remove('modal')
+    }
 
 
     return(
@@ -47,6 +60,8 @@ const Header = ({pic_src}) => {
                 <img src={channel} className={styles.header_pic} />
             </div>
 
+            <Portal func={setValue} value={value} text={'Создать встречу'}/>
+
 
             <div className={styles.header_workers} style={{backgroundColor: style3}}
                 onMouseOver={() => setStyle3('var(--yelllow, #FD0)')}
@@ -54,7 +69,7 @@ const Header = ({pic_src}) => {
             >
                 <img src={worker} className={styles.header_pic} />
             </div>
-            <button className={styles.header_btn}>Создать событие</button>
+            <button className={styles.header_btn} onClick={() => setValue(1)}>Создать событие</button>
             <div className={styles.header_inputBlock}>
                 <input type='text' className={styles.header_inputBlock_field} placeholder='поиск'/>
                 <div className={styles.header_inputBlock_loop}>

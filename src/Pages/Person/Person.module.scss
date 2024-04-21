@@ -1,0 +1,132 @@
+@import '../Fonts.module.scss';
+
+.con {
+    height: 250px;
+    max-width: 1011px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 50px;
+
+
+    &_logo {
+        height: 250px;
+        max-width: 251px;
+        height: 100%;
+        border-radius: 20px;
+        border: 5px solid var(--yelllow, #FD0);
+    }
+
+    &_pic {
+        width: 100%;
+        height: 100%;
+        border-radius: 20px;
+    }
+
+
+    &_info {
+        height: 150px;
+        max-width: 141px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &_name {
+            display: inline-block;
+            margin: 0px;
+            padding: 0px;
+            color: #000;
+            font-family: "Montserrat-Bold";
+            font-size: 40px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+
+        &_age {
+            display: inline-block;
+            margin: 0px;
+            padding: 0px;
+            color: #000;
+            font-family: "Montserrat-Regular";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+
+        }
+
+        &_job {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0px;
+            padding: 0px;
+            width: auto;
+            height: 39px;
+            border-radius: 25px;
+            background: #DDD;
+            color: #000;
+            font-family: "Montserrat-Regular";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+    }
+
+    &_hobbies {
+        height: 100%;
+        max-width: 300px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &_title {
+            display: inline-block;
+            margin: 0px;
+            padding: 0px;
+            color: #000;
+            font-family: "Montserrat-Bold";
+            font-size: 40px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin-bottom: 10px;
+            padding: 0px;
+        }
+
+        &_text {
+            display: inline-block;
+            width: fit-content;
+            margin: 0px;
+            padding: 0px;
+            color: #000;
+            font-family: "Montserrat-Regular";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            border-radius: 20px;
+            background: #FFF6BE;
+        }
+
+    }
+
+    &_btns {
+        max-width: 120px;
+        width: 100%;
+        height: 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &_pic {
+            height: 75px;
+            width: 100%;
+        }
+    }
+
+}
